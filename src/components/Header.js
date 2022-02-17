@@ -5,9 +5,14 @@ import {
   SearchIcon,
   ShoppingCartIcon,
 } from "@heroicons/react/outline";
+import { signIn, signOut, useSession } from "next-auth/react";
+import { useRouter } from "next/router";
 
 // rfce to generate
 function Header() {
+  const { data: session, status } = useSession();
+  const router = useRouter();
+
   return (
     <navbar>
       {/* top nav */}
@@ -21,6 +26,7 @@ function Header() {
             objectFit="contain"
             className="cursor-pointer"
             alt=""
+            onClick={() => router.push("/")}
           />
         </div>
 
@@ -36,8 +42,8 @@ function Header() {
 
         {/* Right */}
         <div className="text-white flex items-center text-xs space-x-6 mx-6 whitespace-nowrap">
-          <div className="link">
-            <p>Hello, Febrian Alif</p>
+          <div onClick={!session ? signIn : signOut} className="link">
+            <p>{session ? `Hello, ${session.user.name}` : "Sign In"}</p>
             <p className="font-extrabold md:text-sm">Account & Lists</p>
           </div>
 
@@ -46,7 +52,10 @@ function Header() {
             <p className="font-extrabold md:text-sm">& Orders</p>
           </div>
 
-          <div className="relative link flex items-center ">
+          <div
+            onClick={() => router.push("/checkout")}
+            className="relative link flex items-center "
+          >
             <span className="absolute top-0 right-0 md:right-10 h-4 w-4 bg-yellow-400 rounded-full text-center text-black font-bold">
               0
             </span>
